@@ -50,7 +50,7 @@ Here is the description of the different scripts:
 * search\_tweets\_fi.R was the script run daily to extract tweets
 * sample.R was used to create the random sample of tweets to annotate
 * 01-performance.R produces the results for RQ1, RQ2 & RQ3.
-* 02-predictions.R produces generates a file with the disagreement between
-  the annotators and the model that was used by the annotators for
+* 02-predictions.R generates files with the disagreement between the
+  annotators and the model that was used by the annotators for
   investigating those disagreements.
 * 03-sentiment.R produces the figures for RQ3.
