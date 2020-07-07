@@ -4,9 +4,9 @@ Filenames <- function(datadir) {
 }
 
 PreprocessTweets <- function(tweets) {
+  tweets[, id := status_id]
   tweets[, lang_cld3 := cld3::detect_language(text)]
-  tweets[, text.clean := (text %>% CleanText %>% RemoveHashtags %>%
-                          ReplaceSpaces %>% tolower)]
+  tweets[, text.clean := Preprocess(text)]
   tweets
 }
 
@@ -17,8 +17,7 @@ LoadTweets <- function(filename) {
 
 SemevalTweets <- function(filename, sample.size) {
   tweets <- readRDS(filename)
-  tweets[, text.clean := (text %>% CleanText %>% RemoveHashtags %>%
-                          ReplaceSpaces %>% tolower)]
+  tweets[, text.clean := Preprocess(text)]
   tweets[, tokens := word_tokenizer(text.clean)]
   tweets[, polarity := factor(polarity, levels=c("negative", "positive", "neutral"))]
   tweets[, polarity2 := factor(polarity, levels=c("negative", "positive"))]
@@ -34,10 +33,8 @@ SemevalTweets <- function(filename, sample.size) {
   tweets
 }
 
-FinnishSentiment <- function(tweets, model, lexicons) {
-  features <- FinalFeatures(tweets, model$vocab, lexicons)
-  polarity <- predict(model$model, features)
+Sentiment <- function(tweets, model) {
   cbind(data.table(status_id=tweets$status_id,
-                   polarity=polarity),
+                   polarity=FinnishSentiment(tweets, model)),
         FiSS(tweets$text.clean))
 }

@@ -1,6 +1,5 @@
 source("R/tweets.R")
 source("R/annotations.R")
 source("R/nlp.R")
-source("R/lexicons.R")
 source("R/features.R")
 source("R/ml.R")

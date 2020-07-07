@@ -6,11 +6,11 @@ FeatureSets <- function(tokens, tokens.stemmed, ids=1:length(tokens), lexicons) 
     list(nostemming=TextFeatures::MakeDTM(tokens, ids, vocab.nostemmed),
          unigrams=TextFeatures::MakeDTM(tokens.stemmed, ids, vocab.uni),
          bigrams=TextFeatures::MakeDTM(tokens.stemmed, ids, vocab.bi),
-         ss.lexicon=MatchLexicon(tokens, lexicon.re, "SSLexicon", ids),
-         ss.lexicon.full=MatchLexicon(tokens, lexicon.re.full,
+         ss.lexicon=MatchLexicon(tokens, lexicon.ss.re, "SSLexicon", ids),
+         ss.lexicon.full=MatchLexicon(tokens, lexicon.ss.re.full,
                                       "SSLexicon", ids),
-         afinn.lexicon=MatchLexicon(tokens.stemmed, lexicon2.re, "AFINN", ids),
-         afinn.lexicon.full=MatchLexicon(tokens.stemmed, lexicon2.re.full,
+         afinn.lexicon=MatchLexicon(tokens.stemmed, lexicon.afinn.re, "AFINN", ids),
+         afinn.lexicon.full=MatchLexicon(tokens.stemmed, lexicon.afinn.re.full,
                                          "AFINN", ids))
   })
 }
@@ -38,27 +38,4 @@ Features <- function(tweets, vocab, lexicons) {
   afinn.lexicon <- MatchLexicon(tweets$tokens.stemmed, lexicons$lexicon2.re,
                                 "AFINN", tweets$status_id)
   cbind(dtm, ss.lexicon, afinn.lexicon)
-}
-
-FinalFeatures <- function(tweets, vocab, lexicons, ids=NULL) {
-  if (is.character(tweets)) {
-    tweets <- data.table(text=tweets)
-    message("Processing tweets")
-    tweets[, text.clean := (text %>% CleanText %>% RemoveHashtags %>%
-                            ReplaceSpaces %>% tolower)]
-    tweets <- ProcessFinnish(tweets)
-  }
-  if (is.list(tweets)) {
-    message("Computing DTM")
-    dtm <- TextFeatures::MakeDTM(tweets$tokens.stemmed, ids, vocab)
-    message("Matching SS Lexicon")
-    ss.lexicon <- MatchLexicon(tweets$tokens, lexicons$lexicon.re,
-                               "SSLexicon", ids)
-    message("Matching AFINN Lexicon")
-    afinn.lexicon <- MatchLexicon(tweets$tokens.stemmed, lexicons$lexicon2.re,
-                                  "AFINN", ids)
-    cbind(dtm, ss.lexicon, afinn.lexicon)
-  } else {
-    stop("Wrong type for text features ", class(tweets))
-  }
 }
