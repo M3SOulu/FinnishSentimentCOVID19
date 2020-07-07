@@ -1,6 +1,5 @@
-source("functions.R")
-source("R/lexicons.R")
-source("R/ml.R")
+library(data.table)
+library(ggplot2)
 
 data <- drake::drake_cache()$get("annotations")
 lexicons <- drake::drake_cache()$get("lexicons")

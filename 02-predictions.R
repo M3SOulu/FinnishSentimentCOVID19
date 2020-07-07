@@ -1,4 +1,4 @@
-source("functions.R")
+library(dta.table)
 
 data <- drake::drake_cache()$get("annotations")
 
