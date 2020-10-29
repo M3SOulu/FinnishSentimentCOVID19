@@ -5,17 +5,9 @@ AnnotationPolarity <- function(polarity) {
 
 ProcessAnnotations <- function(filename) {
   annotated <- fread(filename)
-  annotated <- annotated[raija != "" | anna != "" | minna != ""]
-  annotated[, anna:= AnnotationPolarity(anna)]
-  annotated[, raija:= AnnotationPolarity(raija)]
-  annotated[, minna:= AnnotationPolarity(minna)]
+  annotated <- annotated[annotator2 != "" | annotator1 != "" | annotator3 != ""]
+  annotated[, annotator1 := AnnotationPolarity(annotator1)]
+  annotated[, annotator2 := AnnotationPolarity(annotator2)]
+  annotated[, annotator3 := AnnotationPolarity(annotator3)]
   PreprocessTweets(annotated)
-}
-
-PickRaija <- function(polarity, annotator) {
-  if ("raija" %in% annotator) {
-    which(annotator == "raija")
-  } else {
-    0
-  }
 }
