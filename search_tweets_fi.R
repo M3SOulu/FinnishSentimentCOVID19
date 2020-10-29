@@ -2,11 +2,6 @@ library(data.table)
 library(rtweet)
 library(magrittr)
 
-logging::basicConfig()
-
-datadir <- "./data/raw/fi"
-query <- "covid OR corona OR korona OR pandemi OR epidemi"
-
 ConvertTime <- function(time, format, tz.in="UTC", tz.out="UTC") {
   time %>% strftime(format, tz=tz.in) %>% strptime(format, tz=tz.out)
 }
@@ -28,7 +23,6 @@ TimeRange <- function(datadir, by="days") {
   } else {
     from.time <- ConvertTime(Sys.time(), format) - as.difftime(10, units="days")
   }
-  ## from.time <- ConvertTime(min(tweets$created_at), format)
   to.time <- ConvertTime(Sys.time(), format) - as.difftime(1, units=by)
   seq(from.time, to.time, by=by)
 }
@@ -40,7 +34,6 @@ SearchTweets <- function(query, time, ntweets=18000,
     res <- as.data.table(search_tweets(query, ntweets, max_id=last,
                                        retryonratelimit=TRUE, ...))
     message(sprintf("Got %d tweets", nrow(res)))
-    ## if (nrow(res) == 0 || (!is.null(last) && all(res$status_id == last))) break
     if (nrow(res)) {
       tweets <- rbind(tweets, res)
       message(sprintf("First tweet from %s", max(res$created_at)))
@@ -59,7 +52,6 @@ SaveTweets <- function(tweets, times, datadir, by="days") {
   } else {
     stop("Invalid argument by: ", by)
   }
-
   for (t in strftime(times, format, tz="UTC")) {
     filename <- file.path(datadir, sprintf("%s.rds", t))
     t <- strptime(t, format, tz="UTC")
@@ -67,6 +59,11 @@ SaveTweets <- function(tweets, times, datadir, by="days") {
     saveRDS(tweets[ConvertTime(created_at, format) == t], filename)
   }
 }
+
+logging::basicConfig()
+
+datadir <- "./data/raw/fi"
+query <- "covid OR corona OR korona OR pandemi OR epidemi"
 
 message("Finnish tweets")
 times <- TimeRange(datadir)
