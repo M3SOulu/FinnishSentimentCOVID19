@@ -10,6 +10,12 @@ Pandemic".
 * Python (>= 3.5)
 * libvoikko bindings for Python 3.
 
+## Data
+
+Due to Twitter policy, the repository only contains the list of tweets
+id that were extracted and not the full data that is required to run
+the scripts.
+
 ## Required R packages
 
 The following R packages, available from CRAN, are required:
